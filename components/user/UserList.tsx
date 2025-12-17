@@ -1,13 +1,14 @@
 'use client';
 
 import { Layer3User } from '@/lib/types';
-import { Card, Flex, Text } from '@chakra-ui/react';
+import { Flex } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import LoadingIndicator from '../ui/LoadingIndicator';
 import Link from 'next/link';
+import UserCard from './UserCard';
 
 export default function UserList() {
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isError, error } = useQuery({
     queryKey: ['users'],
     queryFn: async () => {
       const res = await fetch('https://layer3.xyz/api/assignment/users');
@@ -16,7 +17,7 @@ export default function UserList() {
     },
   });
 
-  // TODO: handle errors from the API to display for the user
+  // TODO: handle potential errors from the API to display for the user for UX purposes
   if (isError) console.log(error);
 
   return (
@@ -26,13 +27,7 @@ export default function UserList() {
           {data.map((user) => {
             return (
               <Link href={'user'} key={user.address}>
-                <Card.Root>
-                  <Card.Header>{user.username}</Card.Header>
-                  <Card.Body>
-                    <Text>Layer3 Rank: {user.rank}</Text>{' '}
-                  </Card.Body>
-                  <Card.Footer />
-                </Card.Root>
+                <UserCard user={user} />
               </Link>
             );
           })}
