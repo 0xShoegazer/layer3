@@ -1,9 +1,10 @@
 'use client';
 
 import { Layer3User } from '@/lib/types';
-import { Card, Flex } from '@chakra-ui/react';
+import { Card, Flex, Text } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import LoadingIndicator from '../ui/LoadingIndicator';
+import Link from 'next/link';
 
 export default function UserList() {
   const { data, isLoading, isError, error } = useQuery({
@@ -16,7 +17,6 @@ export default function UserList() {
   });
 
   // TODO: handle errors from the API to display for the user
-
   if (isError) console.log(error);
 
   return (
@@ -25,11 +25,15 @@ export default function UserList() {
         <Flex flexDirection={'column'} gap={5}>
           {data.map((user) => {
             return (
-              <Card.Root key={user.address}>
-                <Card.Header>{user.username}</Card.Header>
-                <Card.Body />
-                <Card.Footer />
-              </Card.Root>
+              <Link href={'user'} key={user.address}>
+                <Card.Root>
+                  <Card.Header>{user.username}</Card.Header>
+                  <Card.Body>
+                    <Text>Layer3 Rank: {user.rank}</Text>{' '}
+                  </Card.Body>
+                  <Card.Footer />
+                </Card.Root>
+              </Link>
             );
           })}
         </Flex>
