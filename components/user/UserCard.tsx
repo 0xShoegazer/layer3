@@ -1,6 +1,6 @@
 import { Layer3User } from '@/lib/types';
 import { Card, Flex, Text } from '@chakra-ui/react';
-import { ChainIconsBanner } from '../ChainIconsBanner';
+// import { ChainIconsBanner } from '../ChainIconsBanner';
 
 export default function UserCard({ user }: { user: Layer3User }) {
   return (
@@ -9,7 +9,7 @@ export default function UserCard({ user }: { user: Layer3User }) {
       <Card.Body>
         <Flex justifyContent={'space-between'} gap={5}>
           <Text>Layer3 Rank: {user.rank}</Text>
-          <ChainIconsBanner gap={10} />
+          {/* <ChainIconsBanner gap={10} /> */}
         </Flex>
       </Card.Body>
       <Card.Footer />

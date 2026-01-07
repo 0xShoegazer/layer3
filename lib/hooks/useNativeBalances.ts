@@ -38,7 +38,7 @@ export function useNativeBalances(address: string, chainIds: number[]) {
   // }
   // return chainData;
   return {
-    //   balances: data,
+    balances: data,
     isLoading,
     isError,
     error,

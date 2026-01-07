@@ -13,7 +13,7 @@ export function ChainIconsBanner({
   const { setCurrentChainId } = useSelectedChain();
 
   return (
-    <Flex gap={gap ?? 5}>
+    <Flex gap={20}>
       {SUPPORTED_CHAINS.map((c) => {
         return (
           <ChainBadge

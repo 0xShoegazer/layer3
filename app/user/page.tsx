@@ -6,12 +6,12 @@ import UserCard from '@/components/user/UserCard';
 import UserTransactions from '@/components/user/UserTransactions';
 import { useSelectedUser } from '@/lib/hooks/useCurrentUser';
 import { useNativeBalances } from '@/lib/hooks/useNativeBalances';
-import { CHAIN_ICONS, SUPPORTED_CHAINS } from '@/lib/wagmi-config';
-import { Flex, Tabs } from '@chakra-ui/react';
+import { SUPPORTED_CHAINS } from '@/lib/wagmi-config';
+import { Flex, Tabs, Text } from '@chakra-ui/react';
 
 export default function User() {
   const { currentUser } = useSelectedUser();
-  const {} = useNativeBalances(
+  const { getBalanceForChain } = useNativeBalances(
     currentUser.address,
     SUPPORTED_CHAINS.map((c) => c.id),
   );
@@ -21,7 +21,17 @@ export default function User() {
     <Flex flexDirection={'column'} p={20} gap={5}>
       <UserCard user={currentUser} />
 
-      <ChainIconsBanner className="cursor" />
+      <ChainIconsBanner className="cursor" gap={5} />
+
+      <Flex gap={10}>
+        {SUPPORTED_CHAINS.map((c) => {
+          return (
+            <>
+              <Text key={c.id}>{getBalanceForChain(c.id)} ETH</Text>
+            </>
+          );
+        })}
+      </Flex>
 
       {/* <Flex>
         <ChainBadge url={CHAIN_ICONS[currentChainId]} />
