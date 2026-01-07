@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 import { wagmiConfig } from '@/lib/wagmi-config';
 import { CurrentUserDataProvider } from '@/lib/hooks/useCurrentUser';
+import { SelectedChainProvider } from '@/lib/hooks/useSelectedChain';
 
 const queryClient = new QueryClient();
 
@@ -14,9 +15,11 @@ export function Provider(props: ColorModeProviderProps) {
     <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>
         <ChakraProvider value={defaultSystem}>
-          <CurrentUserDataProvider>
-            <ColorModeProvider {...props} />
-          </CurrentUserDataProvider>
+          <SelectedChainProvider>
+            <CurrentUserDataProvider>
+              <ColorModeProvider {...props} />
+            </CurrentUserDataProvider>
+          </SelectedChainProvider>
         </ChakraProvider>
       </QueryClientProvider>
     </WagmiProvider>

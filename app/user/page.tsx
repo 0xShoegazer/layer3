@@ -8,8 +8,6 @@ import { Flex, Tabs } from '@chakra-ui/react';
 export default function User() {
   const { currentUser } = useSelectedUser();
 
-  console.log(currentUser);
-
   return (
     <Flex flexDirection={'column'} p={20} gap={5}>
       <UserCard user={currentUser} />
