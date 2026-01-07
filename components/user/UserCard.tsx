@@ -7,8 +7,9 @@ export default function UserCard({ user }: { user: Layer3User }) {
     <Card.Root>
       <Card.Header>{user.username}</Card.Header>
       <Card.Body>
-        <Flex flexDirection={'column'} gap={5}>
-          <Text>Layer3 Rank: {user.rank}</Text> <ChainIconsBanner gap={10} />
+        <Flex justifyContent={'space-between'} gap={5}>
+          <Text>Layer3 Rank: {user.rank}</Text>
+          <ChainIconsBanner gap={10} />
         </Flex>
       </Card.Body>
       <Card.Footer />

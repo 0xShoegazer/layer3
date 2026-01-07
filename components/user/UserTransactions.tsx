@@ -10,8 +10,7 @@ export default function UserTransactions({ user }: { user: Layer3User }) {
 
   // TODO: handle potential errors from the API to display for the user for UX purposes
   if (isError) console.error(error);
-
-  if (transactions) console.log(transactions);
+  // if (transactions) console.log(transactions);
 
   return (
     <>

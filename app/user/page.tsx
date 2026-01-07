@@ -1,34 +1,26 @@
 'use client';
 
-import { ChainBadge } from '@/components/ChainBadge';
+// import { ChainBadge } from '@/components/ChainBadge';
 import { ChainIconsBanner } from '@/components/ChainIconsBanner';
 import UserCard from '@/components/user/UserCard';
 import UserTransactions from '@/components/user/UserTransactions';
 import { useSelectedUser } from '@/lib/hooks/useCurrentUser';
-import { useSelectedChain } from '@/lib/hooks/useSelectedChain';
-// import { CHAIN_ICONS, SUPPORTED_CHAINS } from '@/lib/wagmi-config';
+import { useNativeBalances } from '@/lib/hooks/useNativeBalances';
+import { CHAIN_ICONS, SUPPORTED_CHAINS } from '@/lib/wagmi-config';
 import { Flex, Tabs } from '@chakra-ui/react';
 
 export default function User() {
   const { currentUser } = useSelectedUser();
+  const {} = useNativeBalances(
+    currentUser.address,
+    SUPPORTED_CHAINS.map((c) => c.id),
+  );
   // const { setCurrentChainId, currentChainId } = useSelectedChain();
 
   return (
     <Flex flexDirection={'column'} p={20} gap={5}>
       <UserCard user={currentUser} />
 
-      {/* <Flex gap={5}>
-        {SUPPORTED_CHAINS.map((c) => {
-          return (
-            <ChainBadge
-              key={c.id}
-              url={CHAIN_ICONS[c.id]}
-              onClick={() => setCurrentChainId(c.id)}
-              className="cursor"
-            />
-          );
-        })}
-      </Flex> */}
       <ChainIconsBanner className="cursor" />
 
       {/* <Flex>
