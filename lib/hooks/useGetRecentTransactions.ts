@@ -22,7 +22,7 @@ export function useGetRecentTransactions(address: string) {
 
       // return chainData;
 
-      // This can be paginated and count limited if needed with a query params
+      // This can be paginated and count limited if needed with query params
       const res = await fetch(
         `https://api.etherscan.io/v2/api?apiKey=${process.env.NEXT_PUBLIC_ETHERSCAN_API_KEY}&chainId=${currentChainId}&address=${address}&module=account&action=txList&page=1&offset=10&sort=desc`,
       );

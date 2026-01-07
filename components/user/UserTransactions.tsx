@@ -18,7 +18,7 @@ export default function UserTransactions({ user }: { user: Layer3User }) {
       {isLoading ? (
         <LoadingIndicator />
       ) : (
-        <Table.Root>
+        <Table.Root variant={'outline'}>
           <Table.Caption />
           <Table.Header>
             <Table.Row>
