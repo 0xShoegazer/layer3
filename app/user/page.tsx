@@ -1,32 +1,35 @@
 'use client';
 
 import { ChainBadge } from '@/components/ChainBadge';
+import { ChainIconsBanner } from '@/components/ChainIconsBanner';
 import UserCard from '@/components/user/UserCard';
 import UserTransactions from '@/components/user/UserTransactions';
 import { useSelectedUser } from '@/lib/hooks/useCurrentUser';
 import { useSelectedChain } from '@/lib/hooks/useSelectedChain';
-import { CHAIN_ICONS, SUPPORTED_CHAINS } from '@/lib/wagmi-config';
+// import { CHAIN_ICONS, SUPPORTED_CHAINS } from '@/lib/wagmi-config';
 import { Flex, Tabs } from '@chakra-ui/react';
 
 export default function User() {
   const { currentUser } = useSelectedUser();
-  const { setCurrentChainId, currentChainId } = useSelectedChain();
+  // const { setCurrentChainId, currentChainId } = useSelectedChain();
 
   return (
     <Flex flexDirection={'column'} p={20} gap={5}>
       <UserCard user={currentUser} />
 
-      <Flex gap={5}>
+      {/* <Flex gap={5}>
         {SUPPORTED_CHAINS.map((c) => {
           return (
             <ChainBadge
               key={c.id}
               url={CHAIN_ICONS[c.id]}
               onClick={() => setCurrentChainId(c.id)}
+              className="cursor"
             />
           );
         })}
-      </Flex>
+      </Flex> */}
+      <ChainIconsBanner className="cursor" />
 
       {/* <Flex>
         <ChainBadge url={CHAIN_ICONS[currentChainId]} />
@@ -35,8 +38,8 @@ export default function User() {
       <Tabs.Root lazyMount unmountOnExit defaultValue="tab-1">
         <Tabs.List>
           <Tabs.Trigger value="tab-1">Recent Transactions</Tabs.Trigger>
+          <Tabs.Trigger value="tab-3">Token Balances</Tabs.Trigger>
           <Tabs.Trigger value="tab-2">LP Positions</Tabs.Trigger>
-          <Tabs.Trigger value="tab-3">Balances</Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value="tab-1">
           <UserTransactions user={currentUser} />

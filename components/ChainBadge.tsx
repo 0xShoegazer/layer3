@@ -5,11 +5,13 @@ export function ChainBadge({
   height,
   width,
   onClick,
+  className,
 }: {
   url: string;
   height?: number;
   width?: number;
   onClick?: () => void;
+  className?: string;
 }) {
   return (
     <NextImage
@@ -18,7 +20,7 @@ export function ChainBadge({
       src={url}
       alt=""
       onClick={() => onClick?.()}
-      className="cursor"
+      className={className}
     />
   );
 }
