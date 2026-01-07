@@ -5,7 +5,9 @@ import { Card, Flex, Text } from '@chakra-ui/react';
 export default function UserCard({ user }: { user: Layer3User }) {
   return (
     <Card.Root>
-      <Card.Header>{user.username}</Card.Header>
+      <Card.Header fontWeight={'bold'} fontSize={'1.1rem'}>
+        {user.username} ({user.address})
+      </Card.Header>
       <Card.Body>
         <Flex justifyContent={'space-between'} gap={5}>
           <Text>Layer3 Rank: {user.rank}</Text>
