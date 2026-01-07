@@ -25,11 +25,7 @@ export default function User() {
 
       <Flex gap={10}>
         {SUPPORTED_CHAINS.map((c) => {
-          return (
-            <>
-              <Text key={c.id}>{getBalanceForChain(c.id)} ETH</Text>
-            </>
-          );
+          return <Text key={c.id}>{getBalanceForChain(c.id)} ETH</Text>;
         })}
       </Flex>
 
