@@ -5,3 +5,14 @@ export interface Layer3User {
   username: string;
   rank: number;
 }
+
+export interface EtherscanApiResponse {
+  status: string;
+  message: string;
+  result: {
+    blockNumber: string;
+    timestamp: string;
+    hash: string;
+    function: string;
+  }[];
+}
