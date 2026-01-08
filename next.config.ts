@@ -1,8 +1,17 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-   experimental: {
+  experimental: {
     optimizePackageImports: ['@chakra-ui/react'],
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'mg.reservoir.tools',
+        pathname: '/images/**',
+      },
+    ],
   },
 };
 

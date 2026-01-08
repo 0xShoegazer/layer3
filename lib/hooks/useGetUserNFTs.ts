@@ -13,22 +13,22 @@ export function useGetUserNFTs(address: string) {
   };
 
   const { data, isError, error, isLoading } = useQuery({
-    queryKey: ['users'],
+    queryKey: [`useGetUserNFTs-${currentChainId}`],
     queryFn: async () => {
       // Keeping the list short for now and not setting up pagination/virtual scroll at the moment
       const res = await fetch(
-        `https://api-mainnet.magiceden.dev/v4/evm-public/assets/user-assets?chain=${CHAIN_NAMES[currentChainId]}&walletAddresses[]=${address}&sortBy=receivedAt&sortDir=desc&limit=5`,
+        `https://api-mainnet.magiceden.dev/v4/evm-public/assets/user-assets?chain=${CHAIN_NAMES[currentChainId]}&walletAddresses[]=${address}&sortBy=receivedAt&sortDir=desc&limit=20`,
       );
       const nftData: MagicEdenAPIResponse = await res.json();
+      const userAssets = nftData.assets
+        .filter(
+          (nft: MagicEdenNFTAsset) =>
+            nft.asset.mediaV2 !== undefined &&
+            nft.asset.mediaV2.main.typeRaw === 'image/svg+xml', // TODO: This is a quick test hack to get images viewable without DataURI or video
+        )
+        .map((a) => a.asset);
 
-      // console.log(nftData);
-      const dafuq = nftData.assets;
-      const deez = dafuq.filter(
-        (nft: MagicEdenNFTAsset) => nft.mediaV2 !== undefined,
-      );
-      console.log(deez);
-
-      return nftData;
+      return userAssets;
     },
   });
 

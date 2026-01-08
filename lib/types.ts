@@ -4,6 +4,8 @@ export interface Layer3User {
   address: Address;
   username: string;
   rank: number;
+  xp: number;
+  level: number;
 }
 
 export interface EtherscanApiResponse {
@@ -27,14 +29,18 @@ export interface EtherscanTransactionListResponse extends EtherscanApiResponse {
   }[];
 }
 
+type NFTType = {
+  uri: string;
+  type: 'img' | 'video';
+  typeRaw?: string;
+};
+
 export interface MagicEdenNFTAsset {
-  name: string;
-  mediaV2: {
-    cover: {
-      uri: string;
-    };
-    main: {
-      uri: string;
+  asset: {
+    name: string;
+    mediaV2: {
+      cover: NFTType;
+      main: NFTType;
     };
   };
 }

@@ -3,9 +3,9 @@
 // import { ChainBadge } from '@/components/ChainBadge';
 import { ChainIconsBanner } from '@/components/ChainIconsBanner';
 import UserCard from '@/components/user/UserCard';
+import { UserNFTsList } from '@/components/user/UserNFTsList';
 import UserTransactions from '@/components/user/UserTransactions';
 import { useSelectedUser } from '@/lib/hooks/useCurrentUser';
-import { useGetUserNFTs } from '@/lib/hooks/useGetUserNFTs';
 import { useNativeBalances } from '@/lib/hooks/useNativeBalances';
 import { SUPPORTED_CHAINS } from '@/lib/wagmi-config';
 import { Flex, Tabs, Text } from '@chakra-ui/react';
@@ -16,8 +16,6 @@ export default function User() {
     currentUser.address,
     SUPPORTED_CHAINS.map((c) => c.id),
   );
-
-  const {} = useGetUserNFTs(currentUser.address);
 
   // const { setCurrentChainId, currentChainId } = useSelectedChain();
 
@@ -40,14 +38,18 @@ export default function User() {
       <Tabs.Root lazyMount unmountOnExit defaultValue="tab-1">
         <Tabs.List>
           <Tabs.Trigger value="tab-1">Recent Transactions</Tabs.Trigger>
+          <Tabs.Trigger value="tab-2">NFTs</Tabs.Trigger>
           <Tabs.Trigger value="tab-3">Token Balances</Tabs.Trigger>
-          <Tabs.Trigger value="tab-2">LP Positions</Tabs.Trigger>
+          <Tabs.Trigger value="tab-4">LP Positions</Tabs.Trigger>
         </Tabs.List>
         <Tabs.Content value="tab-1">
           <UserTransactions user={currentUser} />
         </Tabs.Content>
-        <Tabs.Content value="tab-2">Tab 2: Content</Tabs.Content>
+        <Tabs.Content value="tab-2">
+          <UserNFTsList address={currentUser.address} />
+        </Tabs.Content>
         <Tabs.Content value="tab-3">Tab 3: Content</Tabs.Content>
+        <Tabs.Content value="tab-4">Tab 4: Content</Tabs.Content>
       </Tabs.Root>
     </Flex>
   );
