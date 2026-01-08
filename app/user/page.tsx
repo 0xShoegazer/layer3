@@ -5,6 +5,7 @@ import { ChainIconsBanner } from '@/components/ChainIconsBanner';
 import UserCard from '@/components/user/UserCard';
 import UserTransactions from '@/components/user/UserTransactions';
 import { useSelectedUser } from '@/lib/hooks/useCurrentUser';
+import { useGetUserNFTs } from '@/lib/hooks/useGetUserNFTs';
 import { useNativeBalances } from '@/lib/hooks/useNativeBalances';
 import { SUPPORTED_CHAINS } from '@/lib/wagmi-config';
 import { Flex, Tabs, Text } from '@chakra-ui/react';
@@ -15,6 +16,9 @@ export default function User() {
     currentUser.address,
     SUPPORTED_CHAINS.map((c) => c.id),
   );
+
+  const {} = useGetUserNFTs(currentUser.address);
+
   // const { setCurrentChainId, currentChainId } = useSelectedChain();
 
   return (

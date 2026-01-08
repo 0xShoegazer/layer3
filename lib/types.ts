@@ -26,3 +26,19 @@ export interface EtherscanTransactionListResponse extends EtherscanApiResponse {
     function: string;
   }[];
 }
+
+export interface MagicEdenNFTAsset {
+  name: string;
+  mediaV2: {
+    cover: {
+      uri: string;
+    };
+    main: {
+      uri: string;
+    };
+  };
+}
+
+export interface MagicEdenAPIResponse {
+  assets: MagicEdenNFTAsset[];
+}
