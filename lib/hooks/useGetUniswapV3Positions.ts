@@ -14,6 +14,22 @@ const MANAGER_ADDRESSES: { [chainId: number]: Address } = {
   [mainnet.id]: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
 };
 
+export interface V3PositionDetails {
+  nonce: bigint;
+  tokenId: number;
+  operator: string;
+  token0: string;
+  token1: string;
+  fee: number;
+  tickLower: number;
+  tickUpper: number;
+  liquidity: bigint;
+  feeGrowthInside0LastX128: bigint;
+  feeGrowthInside1LastX128: bigint;
+  tokensOwed0: bigint;
+  tokensOwed1: bigint;
+}
+
 export function useGetUniswapV3PositionBalances(
   account: string,
   chainId: number,
@@ -51,7 +67,7 @@ export function useGetUniswapV3TokenIds(account: string, chainId: number) {
     isLoading: loadingIds,
     error,
   } = useQuery({
-    queryKey: [],
+    queryKey: [`tokenOfOwnerByIndex-${account}-${chainId}-${positionCount}`],
     queryFn: async () => {
       const calls = [];
       for (let i = 0; i < positionCount; i++) {
@@ -68,7 +84,7 @@ export function useGetUniswapV3TokenIds(account: string, chainId: number) {
         contracts: calls,
       });
 
-      const tokenIds = result.map((tk) => tk.result);
+      const tokenIds = result.map((tk) => Number(tk.result));
 
       return tokenIds;
     },
@@ -83,6 +99,92 @@ export function useGetUniswapV3TokenIds(account: string, chainId: number) {
   };
 }
 
-export function useV3Positions() {
-  //
+export function useV3PositionsFromTokenIds(
+  tokenIds: number[] | undefined,
+  chainId: number,
+) {
+  const managerAddress = MANAGER_ADDRESSES[chainId];
+  const { data, isLoading, error } = useQuery({
+    queryKey: [`useV3PositionsFromTokenIds-${chainId}`],
+    queryFn: async () => {
+      // The query is disabled if there are no ids
+      const calls = tokenIds?.map((id) => {
+        return {
+          address: managerAddress,
+          abi: NON_FUNGIBLE_MANAGER_ABI,
+          functionName: 'positions',
+          args: [id],
+          chainId,
+        };
+      });
+
+      const result = await multicall(wagmiConfig, {
+        contracts: calls || [],
+      });
+
+      return result;
+    },
+
+    enabled: tokenIds && tokenIds?.length > 0 && !!managerAddress,
+  });
+
+  const positions: V3PositionDetails[] = useMemo(() => {
+    if (!isLoading && !error && tokenIds && data) {
+      return data
+        .reduce((acc, curr) => {
+          // @ts-expect-error IDK
+          acc.push(curr.result);
+          return acc;
+        }, [])
+        .map((result, i) => {
+          const tokenId = tokenIds[i];
+
+          return {
+            tokenId,
+            fee: result[4],
+            feeGrowthInside0LastX128: result[8],
+            feeGrowthInside1LastX128: result[9],
+            liquidity: result[7],
+            nonce: result[0],
+            operator: result[1],
+            tickLower: result[5],
+            tickUpper: result[6],
+            token0: result[2],
+            token1: result[3],
+            tokensOwed0: result[10],
+            tokensOwed1: result[11],
+          };
+        });
+    }
+
+    return [];
+  }, [tokenIds, data, error, isLoading]);
+
+  return {
+    positions,
+    isLoading,
+    error,
+  };
+}
+
+export function useV3Positions(address: string, chainId: number) {
+  const {
+    tokenIds,
+    isLoading: isLoadingIds,
+    positionCount,
+    error: idError,
+  } = useGetUniswapV3TokenIds(address, chainId);
+
+  const {
+    positions,
+    isLoading: isLoadingPositions,
+    error: posError,
+  } = useV3PositionsFromTokenIds(tokenIds, chainId);
+
+  return {
+    positions,
+    positionCount,
+    isLoading: isLoadingIds || isLoadingPositions,
+    error: posError || idError,
+  };
 }
