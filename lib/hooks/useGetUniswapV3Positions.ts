@@ -6,12 +6,21 @@ import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { multicall } from 'wagmi/actions';
 import { wagmiConfig } from '../wagmi-config';
+import { defaultAbiCoder } from '@ethersproject/abi';
+import { getCreate2Address } from '@ethersproject/address';
+import { keccak256 } from '@ethersproject/solidity';
 
 // Can move these into a unified contracts file or use an SDK, etc.
+
 // All versions of the protocol are not available on every chain.
 // Just using mainnet here for example purposes
 const MANAGER_ADDRESSES: { [chainId: number]: Address } = {
   [mainnet.id]: '0xC36442b4a4522E871399CD717aBDD847Ab11FE88',
+};
+
+const FACTORY_ADDRESSES: { [chainId: number]: string } = {
+  [mainnet.id]: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
+  // [arbitrum.id]: '0x1F98431c8aD98523631AE4a59f267346ea31F984',
 };
 
 export interface V3PositionDetails {
@@ -187,4 +196,67 @@ export function useV3Positions(address: string, chainId: number) {
     isLoading: isLoadingIds || isLoadingPositions,
     error: posError || idError,
   };
+}
+
+export function useGetV3PoolsForPositions(
+  chainId: number,
+  positions: V3PositionDetails[],
+) {
+  // Have to subgraph load up the pools now to get token data (Basic symbols will work for this)
+  // Generated from factory-t0-t1-fee
+
+  const factoryAddress = FACTORY_ADDRESSES[chainId];
+  const poolAddresses = useMemo(() => {
+    if (!factoryAddress) return [];
+
+    return positions?.map((pos) => {
+      return computePoolAddress({
+        factoryAddress,
+        tokenA: pos.token0,
+        tokenB: pos.token1,
+        fee: pos.fee,
+        initCodeHashManualOverride: '', // TODO: Need their hash
+      });
+    });
+  }, [positions, factoryAddress]);
+}
+
+/**
+ * Computes a pool address
+ * @param factoryAddress The Uniswap V3 factory address
+ * @param tokenA The first token of the pair, irrespective of sort order
+ * @param tokenB The second token of the pair, irrespective of sort order
+ * @param fee The fee tier of the pool
+ * @param initCodeHashManualOverride Override the init code hash used to compute the pool address if necessary
+ * @returns The pool address
+ */
+export function computePoolAddress({
+  factoryAddress,
+  tokenA,
+  tokenB,
+  fee,
+  initCodeHashManualOverride,
+}: {
+  factoryAddress: string;
+  tokenA: string;
+  tokenB: string;
+  fee: number;
+  initCodeHashManualOverride: string;
+}) {
+  // const [token0, token1] = tokenA.sortsBefore(tokenB) ? [tokenA, tokenB] : [tokenB, tokenA]; // does safety checks
+
+  const tokens = [tokenA, tokenB].sort();
+  return getCreate2Address(
+    factoryAddress,
+    keccak256(
+      ['bytes'],
+      [
+        defaultAbiCoder.encode(
+          ['address', 'address', 'uint24'],
+          [tokens[0], tokens[1], fee],
+        ),
+      ],
+    ),
+    initCodeHashManualOverride,
+  );
 }
