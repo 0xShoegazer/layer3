@@ -9,6 +9,7 @@ import { wagmiConfig } from '../wagmi-config';
 import { defaultAbiCoder } from '@ethersproject/abi';
 import { getCreate2Address } from '@ethersproject/address';
 import { keccak256 } from '@ethersproject/solidity';
+import { Pool, poolInitCodeHash } from '@uniswap/v3-sdk';
 
 // Can move these into a unified contracts file or use an SDK, etc.
 
@@ -202,12 +203,9 @@ export function useGetV3PoolsForPositions(
   chainId: number,
   positions: V3PositionDetails[],
 ) {
-  // Have to subgraph load up the pools now to get token data (Basic symbols will work for this)
-  // Generated from factory-t0-t1-fee
-
   const factoryAddress = FACTORY_ADDRESSES[chainId];
   const poolAddresses = useMemo(() => {
-    if (!factoryAddress) return [];
+    if (!factoryAddress || !positions) return [];
 
     return positions?.map((pos) => {
       return computePoolAddress({
@@ -215,10 +213,14 @@ export function useGetV3PoolsForPositions(
         tokenA: pos.token0,
         tokenB: pos.token1,
         fee: pos.fee,
-        initCodeHashManualOverride: '', // TODO: Need their hash
+        initCodeHashManualOverride: poolInitCodeHash(chainId),
       });
     });
-  }, [positions, factoryAddress]);
+  }, [positions, chainId, factoryAddress]);
+
+  // Have to subgraph load up the pools now to get token data (Basic symbols will work for this)
+
+  console.log(poolAddresses);
 }
 
 /**

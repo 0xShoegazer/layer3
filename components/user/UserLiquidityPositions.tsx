@@ -1,6 +1,7 @@
 import {
   useGetUniswapV3PositionBalances,
   useGetUniswapV3TokenIds,
+  useGetV3PoolsForPositions,
   useV3Positions,
 } from '@/lib/hooks/useGetUniswapV3Positions';
 import LoadingIndicator from '../ui/LoadingIndicator';
@@ -25,6 +26,8 @@ export function UserLiquidityPositions({
     address,
     chainId,
   );
+
+  useGetV3PoolsForPositions(chainId, positions);
 
   if (error) console.log(error);
 
