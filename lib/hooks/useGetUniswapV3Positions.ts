@@ -10,6 +10,9 @@ import { defaultAbiCoder } from '@ethersproject/abi';
 import { getCreate2Address } from '@ethersproject/address';
 import { keccak256 } from '@ethersproject/solidity';
 import { Pool, poolInitCodeHash } from '@uniswap/v3-sdk';
+import { GET_V3_POOLS_QUERY, useUniswapApolloClient } from '../apollo';
+import { useQuery as useApolloQuery } from '@apollo/client/react';
+import { gql } from '@apollo/client';
 
 // Can move these into a unified contracts file or use an SDK, etc.
 
@@ -204,6 +207,7 @@ export function useGetV3PoolsForPositions(
   positions: V3PositionDetails[],
 ) {
   const factoryAddress = FACTORY_ADDRESSES[chainId];
+
   const poolAddresses = useMemo(() => {
     if (!factoryAddress || !positions) return [];
 
@@ -220,7 +224,27 @@ export function useGetV3PoolsForPositions(
 
   // Have to subgraph load up the pools now to get token data (Basic symbols will work for this)
 
-  console.log(poolAddresses);
+  // Override default client with cached versions
+  const client = useUniswapApolloClient(chainId, 'v3');
+
+  // Just getting pool token info to display. Could display more about each position
+  const { loading, error, data } = useApolloQuery(GET_V3_POOLS_QUERY, {
+    client,
+    variables: {
+      where: {
+        id_in: poolAddresses.map((pa) => pa.toLowerCase()),
+      },
+    },
+    skip: !poolAddresses || poolAddresses.length === 0,
+  });
+
+  if (error) console.log(error);
+  if (data) console.log(data);
+
+  return {
+    isLoadingPools: loading,
+    pools: data?.pools,
+  };
 }
 
 /**

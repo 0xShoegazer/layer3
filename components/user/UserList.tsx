@@ -1,7 +1,7 @@
 'use client';
 
 import { Layer3User } from '@/lib/types';
-import { Flex } from '@chakra-ui/react';
+import { Flex, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import UserCard from './UserCard';
 
@@ -15,6 +15,10 @@ export default function UserList({
   return (
     <>
       <Flex flexDirection={'column'} gap={5}>
+        <Text fontWeight={'bold'}>
+          Select a user (this is still ugly looking for now to focus on
+          functionality)
+        </Text>
         {users.map((user) => {
           return (
             <Link

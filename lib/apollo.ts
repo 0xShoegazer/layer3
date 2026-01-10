@@ -1,4 +1,10 @@
-import { ApolloClient, HttpLink, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  gql,
+  HttpLink,
+  InMemoryCache,
+  TypedDocumentNode,
+} from '@apollo/client';
 import { useMemo } from 'react';
 import { arbitrum, mainnet } from 'viem/chains';
 
@@ -20,7 +26,7 @@ const UNISWAP_SUBGRAPHS: {
 
 export function useUniswapApolloClient(
   chainId: number,
-  version: UniswapVersion = 'v2',
+  version: UniswapVersion = 'v3',
 ) {
   return useMemo(() => {
     return new ApolloClient({
@@ -37,3 +43,62 @@ export function useUniswapApolloClient(
     });
   }, [chainId, version]);
 }
+
+export type GetV3PoolsQuery = {
+  __typename?: 'Query';
+  pools: Array<{
+    __typename?: 'Pool';
+    id: string;
+    feeTier: string;
+
+    token0: {
+      __typename?: 'Token';
+      id: string;
+      name: string;
+      symbol: string;
+      decimals: string;
+    };
+    token1: {
+      __typename?: 'Token';
+      id: string;
+      name: string;
+      symbol: string;
+      decimals: string;
+    };
+  }>;
+};
+
+// Gives type info to the data returned from a query
+export const GET_V3_POOLS_QUERY: TypedDocumentNode<GetV3PoolsQuery> = gql`
+  query GetV3Pools(
+    $where: Pool_filter
+    $first: Int
+    $skip: Int
+    $orderBy: Pool_orderBy
+    $orderDirection: OrderDirection
+  ) {
+    pools(
+      skip: $skip
+      first: $first
+      where: $where
+      orderBy: $orderBy
+      orderDirection: $orderDirection
+    ) {
+      id
+      feeTier
+
+      token0 {
+        id
+        name
+        symbol
+        decimals
+      }
+      token1 {
+        id
+        name
+        symbol
+        decimals
+      }
+    }
+  }
+`;

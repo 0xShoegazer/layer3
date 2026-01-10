@@ -5,7 +5,7 @@ import { gql } from '@apollo/client';
 export function useGetUserLps(
   address: string,
   chainId: number,
-  version: UniswapVersion = 'v2',
+  version: UniswapVersion = 'v3',
 ) {
   // Override default client with cached versions
   const client = useUniswapApolloClient(chainId, version);
