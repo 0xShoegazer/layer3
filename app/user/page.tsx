@@ -41,21 +41,21 @@ export default function User() {
       <Tabs.Root lazyMount unmountOnExit defaultValue="tab-1">
         <Tabs.List>
           <Tabs.Trigger value="tab-1">Recent Transactions</Tabs.Trigger>
-          <Tabs.Trigger value="tab-2">NFTs</Tabs.Trigger>
           <Tabs.Trigger value="tab-3">LP Positions</Tabs.Trigger>
+          <Tabs.Trigger value="tab-2">NFTs</Tabs.Trigger>
           {/* <Tabs.Trigger value="tab-4">Token Balances</Tabs.Trigger> */}
         </Tabs.List>
         <Tabs.Content value="tab-1">
           <UserTransactions user={currentUser} />
         </Tabs.Content>
         <Tabs.Content value="tab-2">
-          <UserNFTsList address={currentUser.address} />
-        </Tabs.Content>
-        <Tabs.Content value="tab-3">
           <UserLiquidityPositions
             chainId={currentChainId}
             address={currentUser.address}
           />
+        </Tabs.Content>
+        <Tabs.Content value="tab-3">
+          <UserNFTsList address={currentUser.address} />
         </Tabs.Content>
         {/* <Tabs.Content value="tab-4">Tab 4: Content</Tabs.Content> */}
       </Tabs.Root>
